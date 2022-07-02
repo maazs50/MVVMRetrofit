@@ -2,9 +2,11 @@ package com.example.mvvmretrofit
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.mvvmretrofit.Data.RetrofitService
+import com.example.mvvmretrofit.Data.ApiHelper
+import com.example.mvvmretrofit.Data.RetrofitBuilder
 import com.example.mvvmretrofit.Ui.MainAdapter
 import com.example.mvvmretrofit.ViewModel.MainViewModel
 import com.example.mvvmretrofit.ViewModel.MyViewModelFactory
@@ -15,7 +17,6 @@ class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
     private lateinit var binding: ActivityMainBinding
     lateinit var viewModel: MainViewModel
-    private val retrofitService= RetrofitService.getInstance()
     val adapter = MainAdapter()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setUpViewModel(){
-        viewModel = ViewModelProvider(this, MyViewModelFactory(MainRepository((retrofitService))))
+        viewModel = ViewModelProvider(this, MyViewModelFactory(ApiHelper(RetrofitBuilder.apiService)))
             .get(MainViewModel::class.java)
     }
 
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             adapter.setMoviesList(it)
         })
         viewModel.errorMessage.observe(this, Observer {
-
+            Toast.makeText(this,it,Toast.LENGTH_SHORT).show()
         })
     }
 }
