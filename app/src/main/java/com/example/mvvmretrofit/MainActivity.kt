@@ -21,16 +21,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModel = ViewModelProvider(this, MyViewModelFactory(MainRepository((retrofitService))))
-            .get(MainViewModel::class.java)
+        setUpViewModel()
         binding.recyclerview.adapter = adapter
-        viewModel.movieList.observe(this, Observer {
-            adapter.setMoviesList(it)
-        })
-        viewModel.errorMessage.observe(this, Observer {
-
-        })
+        setUpObservers()
         apiCallwithViewModel()
     }
 
@@ -38,4 +31,17 @@ class MainActivity : AppCompatActivity() {
         viewModel.getAllMovies()
     }
 
+    fun setUpViewModel(){
+        viewModel = ViewModelProvider(this, MyViewModelFactory(MainRepository((retrofitService))))
+            .get(MainViewModel::class.java)
+    }
+
+    private fun setUpObservers() {
+        viewModel.movieList.observe(this, Observer {
+            adapter.setMoviesList(it)
+        })
+        viewModel.errorMessage.observe(this, Observer {
+
+        })
+    }
 }
